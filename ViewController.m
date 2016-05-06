@@ -10,7 +10,7 @@
 #import "ViewController.h"
 
 #import "AFNetworking.h"
-#define FileURL1 @"http://dl.baofeng.com/StormMac/StormMac_1.0.5.dmg"
+#define FileURL1 @"http://cn-zjjh13-dx.acgvideo.com/183.131.156.4/vg11/f/f4/7238001-1.flv?expires=1462532700&ssig=4bYGkHWZW0vK7MbO_icXDw&oi=1944850178&player=1&or=1034170279&rate=0"
 
 @interface ViewController ()
 
@@ -38,7 +38,23 @@
 
 
 - (IBAction)btn:(id)sender {
+    
+
+    
+    
+    
+    
+    
+    
+  /*
     NSString* savepath = [[self getSavePath] stringByAppendingPathComponent:@"111/1.flv"];
+    //路径检查
+    NSString* fileDirPath = [savepath substringToIndex:savepath.length - [savepath lastPathComponent].length-1];
+    NSLog(@"%@",fileDirPath);
+    BOOL bo = [[NSFileManager defaultManager] createDirectoryAtPath:fileDirPath withIntermediateDirectories:YES attributes:nil error:nil];
+    if (bo==NO) {
+        NSLog(@"创建目录失败");
+    }
     NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:FileURL1]];
      [request setHTTPMethod:@"GET"];
     
@@ -61,19 +77,21 @@
     }];
     
     [operation start];
-    
+    */
 
     
     
-    return;
-//    NSString* savepath = [[self getSavePath] stringByAppendingPathComponent:@"111/1.flv"];
+//    return;
+    NSString* savepath = [[self getSavePath] stringByAppendingPathComponent:@"111/1.flv"];
     NSLog(@"%@",savepath);
     [DownloadFile start:FileURL1 savePath:savepath Downloading:^(long long PresentSize, long long WholeSize) {
-        NSLog(@"%lld",PresentSize);
+//        NSLog(@"%lld",PresentSize);
         [self setSliderValue:(float)PresentSize/WholeSize];
     } Finished:^{
         NSLog(@"下载完成");
-    } name:@"1.flv"];
+    } error:^(NSString *error) {
+        NSLog(@"%@",error);
+    }];
     
     return;
     
@@ -90,6 +108,11 @@
 - (IBAction)btn2:(id)sender {
     //在调用pause这个方法时，存在着一定的风险，因为self对task进行了强引用，task又对block进行了引用，block又对self进行引用，这就形成了循环使用
     //对self进行弱引用 __weak typedef(self)   vc=self
+    
+//    [DownloadFile2 pause];
+    
+    return;
+    
     __weak typeof (self) vc = self;
     [self.task cancelByProducingResumeData:^(NSData * _Nullable resumeData) {
         vc.resumData = resumeData;
@@ -119,8 +142,11 @@
  *  @param value 进度条的值
  */
 -(void)setSliderValue:(float)value{
-
-    [_slider setValue:value animated:YES];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        //主线程中更新进度UI操作。。。。
+        [_slider setValue:value animated:YES];
+    }];
+  
 }
 
 
