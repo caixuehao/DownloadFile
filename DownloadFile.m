@@ -50,7 +50,7 @@ NSMutableDictionary* downloadFileTask_dic;//保存下载任务字典;
 
 +(void)start:(NSString*)URL savePath:(NSString*)path Downloading:(void(^)(long long PresentSize,long long WholeSize))downloadingBlock Finished:(void(^)(void))finishedBlock error:(void(^)(NSString* error))errorBlock{
     
-    DownloadFile2* downloadFile = [[DownloadFile2 alloc] init];
+    DownloadFile* downloadFile = [[DownloadFile alloc] init];
     [downloadFile start:URL savePath:path Downloading:downloadingBlock Finished:finishedBlock error:errorBlock];
     
     //保存句柄防止提前被删了
